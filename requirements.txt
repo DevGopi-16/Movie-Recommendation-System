@@ -1,4 +1,3 @@
-
 pandas
 numpy
 scikit-learn
@@ -7,3 +6,4 @@ streamlit
 requests
 altair
 tmdbsimple
+plotly
