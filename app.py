@@ -5,6 +5,8 @@ import requests
 import tmdbsimple as tmdb
 import concurrent.futures
 import streamlit.components.v1 as components
+import matplotlib.pyplot as plt
+import ast
 
 from src.ui_components import render_movie_card
 from src.preprocess import preprocess_data
@@ -179,9 +181,6 @@ if not TMDB_API_KEY:
     
 MOVIES_PER_PAGE = 15
 
-#APP CONFIG 
-st.set_page_config(page_title="Movie Recommendation System", layout="wide")
-
 
 #SESSION STATE 
 if "category_page" not in st.session_state:
@@ -195,8 +194,13 @@ if "recommendations" not in st.session_state:
 if "sidebar_movie_id" not in st.session_state:
     st.session_state.sidebar_movie_id = None
 
+# WATCHLIST STATE
+if "watchlist" not in st.session_state:
+    st.session_state.watchlist = []
+
 #HEADER
 st.markdown("<h1 style='text-align:center;'>🎬 Movie Recommendation System</h1>", unsafe_allow_html=True)
+
 
 #LOAD + PREPROCESS DATA 
 @st.cache_data(show_spinner="📦 Loading movie dataset...")
@@ -353,6 +357,78 @@ document.querySelectorAll('.movie-card-container').forEach(container => {
 </script>
 """, height=0)
 
+
+# ==============================
+# WATCHLIST SECTION
+# ==============================
+
+if st.session_state.watchlist:
+    st.markdown("## ❤️ Your Watchlist")
+
+    num_cols = 5
+    watchlist = st.session_state.watchlist
+
+    for row_i in range(0, len(watchlist), num_cols):
+        cols = st.columns(num_cols)
+
+        for col_j, (col, movie) in enumerate(
+            zip(cols, watchlist[row_i:row_i+num_cols])
+        ):
+            with col:
+                if movie.get("poster_path"):
+                    st.image(
+                        f"https://image.tmdb.org/t/p/w500{movie.get('poster_path')}"
+                    )
+                st.caption(movie.get("title"))
+
+                # Remove button
+                if st.button(
+                    "❌ Remove",
+                    key=f"remove_{row_i}_{col_j}_{movie.get('id')}"
+                ):
+                    st.session_state.watchlist.remove(movie)
+                    st.rerun()
+
+
+# ==============================
+# SAVE WATCHLIST TO CSV
+# ==============================
+if st.session_state.watchlist:
+
+    st.markdown("### 💾 Save Your Watchlist")
+
+    if st.button("Download Watchlist as CSV", use_container_width=True):
+
+        # Convert to DataFrame safely
+        df = pd.DataFrame(st.session_state.watchlist)
+
+        # Detect rating column safely
+        rating_column = None
+        for col in ["vote_average", "rating", "score"]:
+            if col in df.columns:
+                rating_column = col
+                break
+
+        # Keep only useful columns
+        columns_to_keep = ["id", "title", "release_date"]
+        if rating_column:
+            columns_to_keep.append(rating_column)
+
+        df = df[[col for col in columns_to_keep if col in df.columns]]
+
+        file_path = "watchlist.csv"
+        df.to_csv(file_path, index=False)
+
+        st.success("✅ Watchlist saved successfully!")
+
+        # Direct download button (cleaner way — no file open needed)
+        st.download_button(
+            label="📥 Download CSV File",
+            data=df.to_csv(index=False),
+            file_name="watchlist.csv",
+            mime="text/csv"
+        )
+                  
 #SIDEBAR DETAILS 
 if "sidebar_movie" in st.session_state and st.session_state.sidebar_movie:
     movie = st.session_state.sidebar_movie
@@ -369,3 +445,4 @@ if "sidebar_movie" in st.session_state and st.session_state.sidebar_movie:
         trailer_url = get_trailer(movie.get('id'), TMDB_API_KEY)
         if trailer_url:
             st.sidebar.video(trailer_url, start_time=0)
+
