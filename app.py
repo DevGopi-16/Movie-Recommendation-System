@@ -358,9 +358,8 @@ document.querySelectorAll('.movie-card-container').forEach(container => {
 """, height=0)
 
 
-# ==============================
+
 # WATCHLIST SECTION
-# ==============================
 
 if st.session_state.watchlist:
     st.markdown("## ❤️ Your Watchlist")
@@ -390,9 +389,8 @@ if st.session_state.watchlist:
                     st.rerun()
 
 
-# ==============================
+
 # SAVE WATCHLIST TO CSV
-# ==============================
 if st.session_state.watchlist:
 
     st.markdown("### 💾 Save Your Watchlist")
