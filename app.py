@@ -8,6 +8,7 @@ import streamlit.components.v1 as components
 import matplotlib.pyplot as plt
 import ast
 
+from src.styles import load_css
 from src.ui_components import render_movie_card
 from src.preprocess import preprocess_data
 from src.recommender import MovieRecommender
@@ -20,154 +21,14 @@ from src.tmdb_api import (
     get_movie_details
 )
 
-st.set_page_config(page_title="Movie Recommendation System", layout="wide")
+st.set_page_config(
+    page_title="Movie Recommendation System",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-#CSS STYLES
-st.markdown("""
-<style>
-
-/*GLOBAL THEME */
-.stApp {
-    background: radial-gradient(circle at top, #1f2937, #020617);
-    color: #e5e7eb;
-    font-family: 'Inter', sans-serif;
-}
-
-/* MOVIE CARD CONTAINER */
-.movie-card-container {
-    position: relative;
-    perspective: 1200px;
-    display: inline-block;
-    margin: 12px;
-    transition: filter 0.35s ease;
-}
-
-/* Blur siblings */
-.movie-card-container:hover ~ .movie-card-container {
-    filter: blur(2px) brightness(0.75);
-}
-
-/* MOVIE CARD */
-.movie-card {
-    transform-style: preserve-3d;
-    border-radius: 22px;
-    overflow: hidden;
-    background: linear-gradient(145deg, #1f2937, #020617);
-    box-shadow:
-        0 10px 20px rgba(0,0,0,0.35),
-        0 0 12px rgba(37, 99, 235, 0.25);
-    transition:
-        transform 0.55s cubic-bezier(.03,.98,.52,.99),
-        box-shadow 0.55s ease;
-    will-change: transform;
-    animation: fadeInUp 0.6s ease forwards;
-}
-
-/* Hover tilt (CSS-only fallback) */
-.movie-card-container:hover .movie-card {
-    transform: rotateX(4deg) rotateY(6deg) scale(1.08);
-    box-shadow:
-        0 28px 50px rgba(0,0,0,0.65),
-        0 0 35px rgba(37, 99, 235, 0.6),
-        inset 0 0 12px rgba(255,255,255,0.03);
-}
-
-/*POSTER */
-.movie-card img {
-    width: 100%;
-    display: block;
-    border-radius: 18px;
-    transition: transform 0.45s ease, filter 0.45s ease;
-}
-
-.movie-card-container:hover img {
-    transform: scale(1.06);
-    filter: brightness(1.12) contrast(1.05);
-}
-
-/* GLOW AURA */
-.movie-card-container::before {
-    content: '';
-    position: absolute;
-    inset: -12%;
-    background: radial-gradient(
-        circle,
-        rgba(255,255,255,0.06),
-        transparent 70%
-    );
-    border-radius: 24px;
-    opacity: 0;
-    transition: opacity 0.45s ease;
-    pointer-events: none;
-}
-
-.movie-card-container:hover::before {
-    opacity: 1;
-}
-
-/* TITLE */
-.caption {
-    text-align: center;
-    margin-top: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #f3f4f6;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.7);
-}
-
-/* BUTTONS  */
-.stButton > button {
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    color: white;
-    font-weight: 600;
-    border-radius: 14px;
-    padding: 10px 22px;
-    border: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
-}
-
-.stButton > button:hover {
-    transform: translateY(-3px) scale(1.06);
-    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.7);
-}
-
-/*EXPANDER */
-.stExpander {
-    background-color: #111827;
-    border-radius: 16px;
-    padding: 14px;
-    transition: all 0.3s ease;
-}
-
-.stExpander:hover {
-    background-color: #1f2937;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.45);
-}
-
-/*VIDEO*/
-.stVideo iframe {
-    width: 100% !important;
-    border-radius: 16px;
-    box-shadow: 0 14px 34px rgba(0,0,0,0.65);
-}
-
-/* ANIMATIONS */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(22px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-            
-
-</style>
-""", unsafe_allow_html=True)
+# Load custom CSS
+load_css()
 
 #TMDB CONFIG 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")

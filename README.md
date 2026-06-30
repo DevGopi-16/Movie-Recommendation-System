@@ -111,7 +111,8 @@ Movie-Recommendation-System/
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
-│
+|---pages
+    |__1_dashboard.py
 ├── data/
 │   ├── tmdb_5000_movies.csv
 │   └── tmdb_5000_credits.csv
