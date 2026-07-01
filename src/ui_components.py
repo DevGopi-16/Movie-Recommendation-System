@@ -10,7 +10,7 @@ def render_movie_card(movie, trailer=None, section="general", row_idx=0, col_idx
     watch_key = f"watch_{section}_{movie_id}_{row_idx}_{col_idx}"
     trailer_key = f"trailer_{section}_{movie_id}_{row_idx}_{col_idx}"
 
-    # CARD HTML
+    #CARD HTML
     st.markdown(
         f"""
         <div class="movie-card-container">
@@ -30,7 +30,7 @@ def render_movie_card(movie, trailer=None, section="general", row_idx=0, col_idx
         if st.button("ℹ️ Details", key=details_key, use_container_width=True):
             st.session_state.sidebar_movie = movie
 
-    # ❤️ WATCHLIST BUTTON
+    # WATCHLIST BUTTON
     with col2:
         if st.button("❤️ Add to Watchlist", key=watch_key, use_container_width=True):
             if movie not in st.session_state.watchlist:
