@@ -2,12 +2,7 @@
 
 # 🎬 Movie Recommendation System
 
-
-
 A **Netflix / IMDb–style Movie Recommendation Web App** built with **Python & Streamlit**, powered by the **TMDB API** and a **content-based recommendation engine**.
-
-
-
 
 🔗 **Live Demo:**
 https://movie-recommendation-system--gopiprajapati20.replit.app
