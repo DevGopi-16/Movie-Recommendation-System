@@ -19,7 +19,7 @@ https://movie-recommendation-system--gopiprajapati20.replit.app
 - Navigate smoothly using page-based pagination
 
 ---
-
+<!--hello guys this is my project called movie recommendation system -->
 ## 🚀 Features
 
 - 🔥 **Trending Movies**
